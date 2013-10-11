@@ -26,8 +26,14 @@ module.exports = function(html, handleView){
             index: i,
             source: object,
             template: template,
+            parent: templateContext.source,
             parentOptions: templateContext
           })
+
+          if (template.contextAs){
+            current.override = mergeClone(current.override)
+            current.override[template.contextAs] = object
+          }
 
           current.bindingValues = getBindValuesFor(template, get, current)
 
@@ -43,6 +49,7 @@ module.exports = function(html, handleView){
             viewName: entity.view,
             template: template,
             bindingValues: getBindValuesFor(template, get, templateContext),
+            override: {},
             parentOptions: templateContext
           }))
         } else if (handleView){

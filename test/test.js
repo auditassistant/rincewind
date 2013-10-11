@@ -34,6 +34,22 @@ test('Repeater', function(t){
   t.equal(getHtml(render(get)), expected)
 })
 
+test('Context as', function(t){
+  t.plan(1)
+
+  var get = createGetter({
+    items: [
+      {name: 'Item 1', type: 'Thing'},
+      {name: 'Item 2', type: 'OtherThing'}
+    ]
+  })
+
+  var render = getTemplate('<ul> <li t:repeat="items" t:as="item" t:bind:class=".type"><span t:bind="item.name"/></li> </ul>')
+  var expected = '<ul> <li class="Thing"><span>Item 1</span></li><li class="OtherThing"><span>Item 2</span></li> </ul>'
+
+  t.equal(getHtml(render(get)), expected)
+})
+
 test('Inner view', function(t){
   t.plan(1)
 
@@ -93,10 +109,18 @@ function getHtml(elements){
 
 function createGetter(data){
   return function(query, options){
+    var overrides = options.overrides || {}
     if (query.charAt(0) == '.'){
       return (options.source || data)[query.slice(1)]
+    } else if (query.indexOf('.')){
+      var parts = query.split('.')
+      var result = overrides[parts[0]] || data[parts[0]] 
+      parts.slice(1).forEach(function(p){
+        result = result && result[p] != null && result[p] || null
+      })
+      return result
     } else {
-      return data[query] 
+      return overrides[query] || data[query] 
     }
   }
 }
