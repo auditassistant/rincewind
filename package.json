@@ -1,0 +1,31 @@
+{
+  "name": "rincewind",
+  "version": "0.0.0",
+  "description": "An HTML based template engine with a few ever-so-slightly magic attributes",
+  "main": "index.js",
+  "dependencies": {
+    "sax": "~0.5.4",
+    "hyperscript": "~1.2.1",
+    "json-filter": "0.0.0"
+  },
+  "devDependencies": {
+    "tape": "~1.1.1"
+  },
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mmckegg/rincewind.git"
+  },
+  "keywords": [
+    "html",
+    "template",
+    "bind"
+  ],
+  "author": "Matt McKegg",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mmckegg/rincewind/issues"
+  }
+}
