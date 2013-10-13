@@ -8,11 +8,12 @@ test('Root template binding', function(t){
 
   var get = createGetter({
     title: 'Page Title',
-    type: 'page'
+    type: 'page',
+    data: 'stuff'
   })
 
-  var render = getTemplate('<div> <h1 id="heading" t:bind="title" /> <div t:bind:class="type">Content</div> </div>')
-  var expected = '<div> <h1 id="heading">Page Title</h1> <div class="page">Content</div> </div>'
+  var render = getTemplate('<div t:bind:data-attr="data"> <h1 id="heading" t:bind="title" /> <div t:bind:class="type">Content</div> </div>')
+  var expected = '<div data-attr="data"> <h1 id="heading">Page Title</h1> <div class="page">Content</div> </div>'
 
   t.equal(getHtml(render(get)), expected)
 })
@@ -109,7 +110,7 @@ function getHtml(elements){
 
 function createGetter(data){
   return function(query, options){
-    var overrides = options.overrides || {}
+    var overrides = options.override || {}
     if (query.charAt(0) == '.'){
       return (options.source || data)[query.slice(1)]
     } else if (query.indexOf('.')){

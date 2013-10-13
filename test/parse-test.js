@@ -24,7 +24,7 @@ test("Parse standard elements", function(t){
 })
 
 
-test("Parse standard elements", function(t){
+test("Parse standard elements with repeater", function(t){
   var view = "<div>Contents <span t:repeat='query'><span t:bind='.test:cat'/></span></div>"
   var expected = { 
     'main': {

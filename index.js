@@ -1,10 +1,21 @@
 var parse = require('./lib/parse')
 var render = require('./lib/render')
 
-module.exports = function(html, handleView){
+var h = require('hyperscript')
+
+module.exports = function(html, options){
+  //options: name, master, views
+  
   var view = html
+
+  if (typeof options == 'string'){
+    options = {name: options}
+  } else if (!options) {
+    options = {}
+  }
+
   if (typeof html == 'string'){
-    view = parse(html)
+    view = parse(html, options.name || 't')
   }
 
   var result = function(get, options){
@@ -52,14 +63,13 @@ module.exports = function(html, handleView){
             override: {},
             parentOptions: templateContext
           }))
-        } else if (handleView){
-          return handleView(entity.view, templateContext)
         }
+        
       }
     }
 
     var rootTemplate = view[view.$root]
-    return render(mergeClone(options, {
+    var result = render(mergeClone(options, {
       template: rootTemplate,
       bindingValues: getBindValuesFor(rootTemplate, get, options),
       formatters: options.formatters || {},
@@ -67,6 +77,11 @@ module.exports = function(html, handleView){
       handleEntity: handleEntity
     }))
 
+    result.toHtml = function(){
+      return getHtml(result)
+    }
+
+    return result
   }
 
   function merge(subView){
@@ -88,18 +103,36 @@ module.exports = function(html, handleView){
     return newViews
   }
 
-  result.setMaster = function(name){
+  result.setMaster = function(master){
+    var name = null
+    var result = []
+
+    if (typeof master == 'string'){
+      name = master
+    } else if (typeof master == 'function') {
+      var v = master.getView()
+      name = v.$root
+      result = merge(v)
+    } else {
+      name = master.$root
+      result = merge(master)
+    }
+
     var rootTemplate = view[view.$root]
     var placeholder = ['t:placeholder', {_view: name}, rootTemplate.elements]
     rootTemplate.elements = [placeholder]
     rootTemplate.subViews.push(name)
     view.$referencedViews.push(name)
+
+    return result
   }
 
   result.addView = function(html, name){
 
     if (typeof html == 'string'){
       html = parse(html, name)
+    } else if (typeof html == 'function'){
+      html = html.getView()
     }
 
     return merge(html)
@@ -110,6 +143,17 @@ module.exports = function(html, handleView){
   }
 
   result.getView = function(){ return view }
+
+
+  if (options.views){
+    options.views.forEach(function(view){
+      result.addView(view)
+    })
+  }
+
+  if (options.master){
+    result.setMaster(options.master)
+  }
 
   return result
 }
@@ -140,4 +184,10 @@ function mergeClone(){
     }
   }
   return result
+}
+
+function getHtml(elements){
+  return elements.map(function(element){
+    return element.outerHTML
+  }).join('')
 }
