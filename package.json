@@ -4,9 +4,10 @@
   "description": "An HTML based template engine with a few ever-so-slightly magic attributes",
   "main": "index.js",
   "dependencies": {
-    "sax": "~0.5.4",
+    "sax": "~0.5.5",
+    "html-element": "*",
     "hyperscript": "~1.2.1",
-    "json-filter": "0.0.0"
+    "json-filter": "*"
   },
   "devDependencies": {
     "tape": "~1.1.1"
@@ -21,7 +22,12 @@
   "keywords": [
     "html",
     "template",
-    "bind"
+    "bind",
+    "serverside",
+    "clientside",
+    "pure",
+    "render",
+    "parser"
   ],
   "author": "Matt McKegg",
   "license": "MIT",
