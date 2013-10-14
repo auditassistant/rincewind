@@ -13,7 +13,7 @@ test('Root template binding', function(t){
   })
 
   var render = getTemplate('<div t:bind:data-attr="data"> <h1 id="heading" t:bind="title" /> <div t:bind:class="type">Content</div> </div>')
-  var expected = '<div data-attr="data"> <h1 id="heading">Page Title</h1> <div class="page">Content</div> </div>'
+  var expected = '<div data-attr="stuff"> <h1 id="heading">Page Title</h1> <div class="page">Content</div> </div>'
 
   t.equal(getHtml(render(get)), expected)
 })
