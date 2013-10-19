@@ -6,7 +6,6 @@
   "dependencies": {
     "sax": "~0.5.5",
     "html-element": "*",
-    "hyperscript": "~1.2.1",
     "json-filter": "*"
   },
   "devDependencies": {

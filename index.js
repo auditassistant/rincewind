@@ -1,8 +1,6 @@
 var parse = require('./lib/parse')
 var render = require('./lib/render')
 
-var h = require('hyperscript')
-
 module.exports = function(html, options){
   //options: name, master, views
   
