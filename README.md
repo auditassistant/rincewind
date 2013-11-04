@@ -120,10 +120,10 @@ function respond(req, res, data){
     }).value
   }
 
-  // renderView returns an array of html elements, so use getHtml() to render
+  // renderView returns an array of html elements, so use toHtml() to render
   var html = renderView(queryHandler, {
     formatters: formatters
-  }).getHtml()
+  }).toHtml()
 
   res.end(html)
 }
