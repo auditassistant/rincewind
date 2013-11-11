@@ -5,11 +5,10 @@
   "main": "index.js",
   "dependencies": {
     "sax": "~0.5.5",
-    "html-element": "*",
-    "json-filter": "*"
+    "json-filter": "~0.0"
   },
   "devDependencies": {
-    "tape": "~1.1.1"
+    "tape": "~1.1"
   },
   "scripts": {
     "test": "tap test/*.js"

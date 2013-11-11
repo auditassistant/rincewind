@@ -103,27 +103,22 @@ var formatters = {
   markdown: insertMarkdownFormatterHere
 }
 
-var master = Template(fs.readFileSync(__dirname + '/master.html', 'utf8'), 'master')
-
-var renderView = Template(fs.readFileSync(__dirname + '/post.html', 'utf8'), {
-  name: 'post', master: master
-})
+var master = Template(__dirname + '/master.html')
+var renderView = Template(__dirname + '/post.html')
 
 function respond(req, res, data){
-  var queryHandler = function(query, templateContext){
+  var queryHandler = function(query){
     return jsonQuery(query, {
       rootContext: data,
-      context: templateContext.source,
-
-      // and some bonus attributes for clever queries
-      override: templateContext.override, parent: templateContext.parent
+      context: this.source,
+      override: this.override
     }).value
   }
 
-  // renderView returns an array of html elements, so use toHtml() to render
-  var html = renderView(queryHandler, {
-    formatters: formatters
-  }).toHtml()
+  var html = master({
+    get: queryHandler
+    content: renderView({get: queryHandler})
+  })
 
   res.end(html)
 }
@@ -240,22 +235,74 @@ If required (e.g. nesting repeaters) you can use `t:as` to assign the context a 
 ```
 ### Attribute: `t:view`
 
-Specify a sub-view to render as the content of the element. It must be part of the current view to be found.
+Specify a sub-view to render as the content of the element.
+
+```html
+<!-- view.html -->
+<? require './subview.html' as subview ?>
+<div>
+  <div t:view='subview' />
+</div>
+```
+
+```html
+<!--- subview.html -->
+<div>Sub-view content</div>
+```
+
+Format content in specific way:
+
+```html
+<? require './format.html' as format ?>
+<div>
+  <div t:bind='contact' t:view='format' />
+</div>
+```
+
+```html
+<!--- format.html -->
+<strong><span t:bind='.name' />:</strong> <span t:bind='.address' />
+```
+
+Or require javascript view:
+
+```html
+<? require './markdown.html' as markdown ?>
+<div>
+  <div t:bind='body' t:view='markdown' />
+</div>
+```
 
 ```js
-var view = rincewind("<div><div t:view='subview' /></div>")
-view.addView("<div>...</div>", 'subview')
+// markdown.html
+var marked = require('marked')
+module.exports = function(context){
+  return marked(context.source)
+}
+```
 
-// or
-var anotherView = rincewind("<article>...</article>", {name: 'anotherView'})
-view.addView(anotherView)
+Wrap content using javascript:
+
+```html
+<? require './wrapper.html' as wrap ?>
+<div>
+  <t:placeholder t:view='wrap' />
+</div>
+```
+
+```js
+// wrapper.html
+var marked = require('marked')
+module.exports = function(context){
+  return '<strong>' + context.content + '</strong>'
+}
 ```
 
 If the element had content specified, it will be overrided with the content of the subview, but if the subview contains an element with the attribute `t:content`, the removed content will be inserted here. This allows creating views that act like wrappers.
 
 ### Attribute: `t:content`
 
-This attribute accepts no value and is used on **master views** to denote where to insert the actual view content.
+This attribute accepts no value and is used to denote where to insert inner content.
 
 Say we have this master layout:
 
@@ -295,26 +342,4 @@ We would get:
     </div>
   </body>
 </html>
-```
-
-### Attribute: `t:format`
-
-This attribute is used to specify a custom renderer to use for rendering the value of [`t:bind`](https://github.com/mmckegg/rincewind#attribute-tbind). It could be used to apply Markdown or Textile to the original text. 
-
-Formatters are functions that except a value parameter and return an array of hyperscript elements.
-
-```js
-var h = require('hyperscript')
-var markdown = require('marked')
-
-var formatters = {
-  markdown: function(input, templateContext){
-    var wrapper = h('div')
-    wrapper.innerHTML = markdown(input, options)
-    return wrapper
-  }
-}
-
-var view = rincewind("<div><div t:bind='body' t:format='markdown' /></div>")
-view(queryHandler, {formatters: formatters})
 ```

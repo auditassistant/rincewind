@@ -3,23 +3,11 @@ var util = require('util')
 var parseView = require('../lib/parse')
 
 test("Parse standard elements", function(t){
-  var view = "<div>Contents <strong>Some sub content</strong></div>"
-  var expected = { 
-    'main': {
-      ref: 'main',
-      elements: [[ 
-        'div',{},[ 'Contents ', [ 'strong', {}, [ 'Some sub content' ] ] ] 
-      ]],
-      sub: [],
-      subViews: [],
-      subBindings: [],
-      bindings: [],
-      _isView: true 
-    },
-    $referencedViews: [],
-    $root: 'main'
+  var view = "<div id='main'>Contents <strong>Some sub content</strong></div>"
+  var expected = {
+    c: ['<div id="main">Contents <strong>Some sub content</strong></div>']
   }
-  t.deepEqual(parseView(view, 'main'), expected)
+  t.deepEqual(parseView(view), expected)
   t.end()
 })
 
@@ -27,66 +15,53 @@ test("Parse standard elements", function(t){
 test("Parse standard elements with repeater", function(t){
   var view = "<div>Contents <span t:repeat='query'><span t:bind='.test:cat'/></span></div>"
   var expected = { 
-    'main': {
-      ref: 'main',
-      elements: [ 
-        ['div',{},[ 'Contents ', {template: 'main:1'} ] ]
-      ],
-      sub: ['main:1'],
-      bindings: [],
-      subBindings: ['query'],
-      subViews: [],
-      _isView: true 
-    },
-    'main:1': {
-      ref: 'main:1',
-      query: 'query',
-      elements: [ 
-        [ 'span', {}, [ 
-          [ 'span', { _bind: '.test:cat' } ] 
-        ] ]
-      ],
-      sub: [],
-      subViews: [],
-      subBindings: [],
-      bindings: ['.test:cat']
-    },
-    $referencedViews: [],
-    $root: 'main'
+    c: ['<div>Contents ', {
+      r: 'query',
+      c: ['<span><span>', {q: '.test:cat'}, '</span></span>']
+    }, '</div>']
   }
 
-  console.error(util.inspect(parseView(view, 'main'), false, 10))
-
-  t.deepEqual(parseView(view, 'main'), expected)
+  t.deepEqual(parseView(view), expected)
   t.end()
 })
 
-// TODO: More tests
-
 test("Parse standard elements with inner view", function(t){
-  var view = "<div>Contents <strong>Some sub content</strong> <placeholder t:view='inline_item'/></div>"
+  var view = "<div>Contents <strong>Some sub content</strong> <t:placeholder t:view='inline_item'/></div>"
   //console.log(util.inspect(parseView(view), false, 10))
   
   var expected = {
-    'main': {
-      ref: 'main',
-      elements:
-      [
-        ['div',{},[
-          'Contents ',['strong', {},['Some sub content']],' ',['placeholder',{
-            _view: 'inline_item'
-          },[]]]
-        ]
-      ],
-      sub: [],
-      subViews: ['inline_item'],
-      bindings: [],
-      subBindings: [],
-      _isView: true
-    },
-    $referencedViews: ['inline_item'],
-    $root: 'main'
+    c: ['<div>Contents <strong>Some sub content</strong> ', {v: 'inline_item'}, '</div>']
   }
-  t.deepEqual(parseView(view, 'main'), expected)
+
+  t.deepEqual(parseView(view), expected)
+  t.end()
+})
+
+
+test("t:by and t:when", function(t){
+  var view = "<div t:by='type'><div t:when='cat'>Cat</div><div t:when='dog'>Dog</div><div t:when='cat|dog'>Either</div></div>"
+  //console.log(util.inspect(parseView(view), false, 10))
+  
+  var expected = {
+    c: ['<div>', {c: ['<div>Cat</div>'], f: {type: 'cat'}}, {c: ['<div>Dog</div>'], f: {type: 'dog'}}, {c: ['<div>Either</div>'], f: {type: {$only: ['cat', 'dog']}}}, '</div>']
+  }
+
+  t.deepEqual(parseView(view), expected)
+  t.end()
+})
+
+test("process requires", function(t){
+  var view = "<? require './test.html' as test ?><? require './heading.html' as heading ?><div t:view='test'/>"
+  //console.log(util.inspect(parseView(view), false, 10))
+  
+  var expected = {
+    c: ['<div>', {v: 'test'}, '</div>'],
+    requires: {
+      'test': './test.html',
+      'heading': './heading.html'
+    }
+  }
+
+  t.deepEqual(parseView(view), expected)
   t.end()
 })

@@ -1,5 +1,4 @@
 var getTemplate = require('../')
-
 var test = require('tape')
 
 
@@ -12,10 +11,10 @@ test('Root template binding', function(t){
     data: 'stuff'
   })
 
-  var render = getTemplate('<div t:bind:data-attr="data"> <h1 id="heading" t:bind="title" /> <div t:bind:class="type">Content</div> </div>')
+  var render = getTemplate({parse: '<div t:bind:data-attr="data"> <h1 id="heading" t:bind="title" /> <div t:bind:class="type">Content</div> </div>'})
   var expected = '<div data-attr="stuff"> <h1 id="heading">Page Title</h1> <div class="page">Content</div> </div>'
 
-  t.equal(getHtml(render(get)), expected)
+  t.equal(render({get: get}), expected)
 })
 
 
@@ -29,10 +28,10 @@ test('Repeater', function(t){
     ]
   })
 
-  var render = getTemplate('<ul> <li t:repeat="items" t:bind=".name" t:bind:class=".type" /> </ul>')
+  var render = getTemplate({parse: '<ul> <li t:repeat="items" t:bind=".name" t:bind:class=".type" /> </ul>'})
   var expected = '<ul> <li class="Thing">Item 1</li><li class="OtherThing">Item 2</li> </ul>'
 
-  t.equal(getHtml(render(get)), expected)
+  t.equal(render({get: get}), expected)
 })
 
 test('Context as', function(t){
@@ -45,10 +44,10 @@ test('Context as', function(t){
     ]
   })
 
-  var render = getTemplate('<ul> <li t:repeat="items" t:as="item" t:bind:class=".type"><span t:bind="item.name"/></li> </ul>')
+  var render = getTemplate({parse: '<ul> <li t:repeat="items" t:as="item" t:bind:class=".type"><span t:bind="item.name"/></li> </ul>'})
   var expected = '<ul> <li class="Thing"><span>Item 1</span></li><li class="OtherThing"><span>Item 2</span></li> </ul>'
 
-  t.equal(getHtml(render(get)), expected)
+  t.equal(render({get: get}), expected)
 })
 
 test('Inner view', function(t){
@@ -61,12 +60,12 @@ test('Inner view', function(t){
     ]
   })
 
-  var render = getTemplate('<div> <h1>Title</h1> <div t:view="inner" /> </div>')
-  render.addView('<ul> <li t:repeat="items" t:bind=".name" t:bind:class=".type" /> </ul>', 'inner')
+  var render = getTemplate({parse: '<div> <h1>Title</h1> <div t:view="inner" /> </div>'})
+  render.addView('inner', {parse: '<ul> <li t:repeat="items" t:bind=".name" t:bind:class=".type" /> </ul>'})
 
   var expected = '<div> <h1>Title</h1> <div><ul> <li class="Thing">Item 1</li><li class="OtherThing">Item 2</li> </ul></div> </div>'
 
-  t.equal(getHtml(render(get)), expected)
+  t.equal(render({get: get}), expected)
 })
 
 test('Inner view with placeholder', function(t){
@@ -79,12 +78,12 @@ test('Inner view with placeholder', function(t){
     ]
   })
 
-  var render = getTemplate('<div> <h1>Title</h1> <t:placeholder t:view="inner" /> </div>')
-  render.addView('<ul> <li t:repeat="items" t:bind=".name" t:bind:class=".type" /> </ul>', 'inner')
+  var render = getTemplate({parse: '<div> <h1>Title</h1> <t:placeholder t:view="inner" /> </div>'})
+  render.addView('inner', {parse: '<ul> <li t:repeat="items" t:bind=".name" t:bind:class=".type" /> </ul>'})
 
   var expected = '<div> <h1>Title</h1> <ul> <li class="Thing">Item 1</li><li class="OtherThing">Item 2</li> </ul> </div>'
 
-  t.equal(getHtml(render(get)), expected)
+  t.equal(render({get: get}), expected)
 })
 
 test('Conditional elements', function(t){
@@ -95,24 +94,18 @@ test('Conditional elements', function(t){
     showSecond: false
   })
 
-  var render = getTemplate('<div> <span t:if="showFirst">First</span> <span t:if="showSecond">Second</span> </div>')
+  var render = getTemplate({parse: '<div> <span t:if="showFirst">First</span> <span t:if="showSecond">Second</span> </div>'})
 
   var expected = '<div> <span>First</span>  </div>'
 
-  t.equal(getHtml(render(get)), expected)
+  t.equal(render({get: get}), expected)
 })
 
-function getHtml(elements){
-  return elements.map(function(element){
-    return element.outerHTML
-  }).join('')
-}
-
 function createGetter(data){
-  return function(query, options){
-    var overrides = options.override || {}
+  return function(query){
+    var overrides = this.override || {}
     if (query.charAt(0) == '.'){
-      return (options.source || data)[query.slice(1)]
+      return (this.source || data)[query.slice(1)]
     } else if (query.indexOf('.')){
       var parts = query.split('.')
       var result = overrides[parts[0]] || data[parts[0]] 
