@@ -48,7 +48,7 @@ And here's a view to make it browsery:
     <h1 t:bind='post.title' />
     <p t:bind='post.date' />
   </header>
-  <div t:bind='post.body' t:format='markdown' />
+  <div t:bind='post.body' t:view='markdown' />
 
   <section class='comments'>
     <header>Comments</header>
