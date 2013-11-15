@@ -40,6 +40,9 @@ And here's a view to make it browsery:
 
 ```html
 <!-- post.html -->
+<? require './markdown.js' as markdown ?>
+<? require './widget.html' as widget ?>
+
 <article class='Post'>
   <header>
     <h1 t:bind='post.title' />
@@ -55,12 +58,31 @@ And here's a view to make it browsery:
         <strong t:bind='.name' /> on
         <span t:bind='.date' />
       </header>
-      <div t:bind='.body' t:format='markdown' />
+      <div t:bind='.body' t:view='markdown' />
     </div>
 
   </section>
 
+  <aside t:view='widget' />
 </article>
+```
+
+```html
+<!-- widget.htmk -->
+<h1>Cool Links!</h1>
+<ul>
+  <li><a href='https://github.com'>Github</a></li>
+  <li><a href='http://nodejs.org'>Node.js</a></li>
+  <li><a href='https://npmjs.org'>Node.js</a></li>
+</ul>
+```
+
+```js
+// markdown.js
+var marked = require('marked')
+module.exports = function(context){
+  return marked(context.source)
+}
 ```
 
 And a master/layout to hold it:
@@ -84,7 +106,6 @@ And a master/layout to hold it:
     </div>
 
     <footer>Powered by Node, NPM and You</footer>
-    <script id='context' src='/bundle.js' t:bind:data-token='token' t:bind:data-view='view' />
   </body>
 
 </html>
@@ -92,19 +113,15 @@ And a master/layout to hold it:
 
 ### Now let's hook it all up!
 
-We'll preload our views using readFileSync and do our databind with json-query.
+Create our views and do some databinding with json-query.
 
 ```js
 var fs = require('fs')
-var Template = require('rincewind')
+var View = require('rincewind')
 var jsonQuery = require('json-query')
 
-var formatters = {
-  markdown: insertMarkdownFormatterHere
-}
-
-var master = Template(__dirname + '/master.html')
-var renderView = Template(__dirname + '/post.html')
+var master = View(__dirname + '/master.html')
+var renderView = View(__dirname + '/post.html')
 
 function respond(req, res, data){
   var queryHandler = function(query){
@@ -126,6 +143,38 @@ function respond(req, res, data){
 var server = http.createServer(function(req,res){
   respond(req, res, data)
 })
+```
+
+### Inline views
+
+```js
+var View = require('rincewind')
+var renderView = View({parse: '<div><div t:bind="value" /></div>'})
+```
+
+## Preloading views
+
+### Manually
+
+```js
+var View = require('rincewind')
+var precompiled = View(__dirname + '/view.html').getCompiledView()
+```
+
+Then send the precompiled value to the browser.
+
+```js
+// recreate in the browser
+var View = require('rincewind')
+var renderView = View(precompiled)
+```
+
+### Browserify transform
+
+Or you can use [rincewind-precompile-transform](https://github.com/mmckegg/rincewind-precompile-transform) which will automatically compile and inline any rincewind views in your source for the browser bundle.
+
+```bash
+$ browserify entry.js -t rincewind-precompile-transform > output.js
 ```
 
 ## The magic t:attributes
@@ -274,7 +323,7 @@ Or require javascript view:
 ```
 
 ```js
-// markdown.html
+// markdown.js
 var marked = require('marked')
 module.exports = function(context){
   return marked(context.source)
