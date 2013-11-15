@@ -68,12 +68,12 @@ And here's a view to make it browsery:
 ```
 
 ```html
-<!-- widget.htmk -->
+<!-- widget.html -->
 <h1>Cool Links!</h1>
 <ul>
   <li><a href='https://github.com'>Github</a></li>
   <li><a href='http://nodejs.org'>Node.js</a></li>
-  <li><a href='https://npmjs.org'>Node.js</a></li>
+  <li><a href='https://npmjs.org'>npm</a></li>
 </ul>
 ```
 
