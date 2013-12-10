@@ -34,6 +34,22 @@ test('Repeater', function(t){
   t.equal(render({get: get}), expected)
 })
 
+test('Repeater conditional', function(t){
+  t.plan(1)
+
+  var get = createGetter({
+    items: [
+      {name: 'Item 1', type: 'Thing'},
+      {name: 'Item 2', type: 'OtherThing', show: true}
+    ]
+  })
+
+  var render = getTemplate({parse: '<ul> <li t:repeat="items" t:if=".show" t:bind=".name" t:bind:class=".type" /> </ul>'})
+  var expected = '<ul> <li class="OtherThing">Item 2</li> </ul>'
+
+  t.equal(render({get: get}), expected)
+})
+
 test('Context as', function(t){
   t.plan(1)
 
