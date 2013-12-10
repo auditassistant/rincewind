@@ -3,11 +3,7 @@ rincewind
 
 An HTML based template engine with a few ever-so-slightly magic attributes.
 
-## Install
-
-```bash
-$ npm install rincewind
-```
+[![NPM](https://nodei.co/npm/rincewind.png?compact=true)](https://nodei.co/npm/rincewind/)
 
 ## Example
 
