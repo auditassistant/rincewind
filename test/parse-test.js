@@ -65,3 +65,15 @@ test("process requires", function(t){
   t.deepEqual(parseView(view), expected)
   t.end()
 })
+
+test("self closing tags", function(t){
+  var view = "<div><img src='test.jpg' /> <br /> <hr /><script src='test' />"
+  //console.log(util.inspect(parseView(view), false, 10))
+  
+  var expected = {
+    c: ['<div><img src="test.jpg"/> <br/> <hr/><script src="test"></script>']
+  }
+
+  t.deepEqual(parseView(view), expected)
+  t.end()
+})
