@@ -99,4 +99,13 @@ test("bind with content already present and is view (discard)", function(t){
   t.end()
 })
 
+test("bind attributes", function(t){
+  var view = '<div t:bind:id="id">Content</div>'
+  
+  var expected = {
+    c: ['<div id="', {q: 'id', e: 'attr'} ,'">Content</div>']
+  }
+
+  t.deepEqual(parseView(view), expected)
+  t.end()
 })

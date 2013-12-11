@@ -147,6 +147,20 @@ test("bind with content already present and is view (preserve)", function(t){
   t.equal(render({get: get}), expected)
 })
 
+test('bind attributes', function(t){
+  
+  t.plan(1)
+
+  var render = getTemplate({parse: '<div t:bind:id="id">Content</div>'})
+
+  var get = createGetter({
+    id: '12"3'
+  })
+
+  var expected = '<div id="12&quot;3">Content</div>'
+  t.equal(render({get: get}), expected)
+})
+
 function createGetter(data){
   return function(query){
     var overrides = this.override || {}
