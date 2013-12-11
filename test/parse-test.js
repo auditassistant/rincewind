@@ -68,7 +68,6 @@ test("process requires", function(t){
 
 test("self closing tags", function(t){
   var view = "<div><img src='test.jpg' /> <br /> <hr /><script src='test' />"
-  //console.log(util.inspect(parseView(view), false, 10))
   
   var expected = {
     c: ['<div><img src="test.jpg"/> <br/> <hr/><script src="test"></script>']
@@ -76,4 +75,28 @@ test("self closing tags", function(t){
 
   t.deepEqual(parseView(view), expected)
   t.end()
+})
+
+test("bind with content already present (discard)", function(t){
+  var view = '<div t:bind="test">Content</div>'
+  
+  var expected = {
+    c: ['<div>', {q: 'test'}, '</div>']
+  }
+
+  t.deepEqual(parseView(view), expected)
+  t.end()
+})
+
+test("bind with content already present and is view (discard)", function(t){
+  var view = '<div t:bind="test" t:view="view">Content</div>'
+  
+  var expected = {
+    c: ['<div>', {q: 'test', v: 'view', c: ['Content']}, '</div>']
+  }
+
+  t.deepEqual(parseView(view), expected)
+  t.end()
+})
+
 })

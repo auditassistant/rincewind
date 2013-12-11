@@ -117,6 +117,36 @@ test('Conditional elements', function(t){
   t.equal(render({get: get}), expected)
 })
 
+test("bind with content already present (discard)", function(t){
+  t.plan(1)
+
+  var render = getTemplate({parse: '<div t:bind="test">Content</div>'})
+
+  var get = createGetter({
+    test: 'value'
+  })
+
+  var expected = '<div>value</div>'
+  t.equal(render({get: get}), expected)
+})
+
+test("bind with content already present and is view (preserve)", function(t){
+
+  t.plan(1)
+
+  var render = getTemplate({parse: '<div t:bind="test" t:view="view">Content</div>'})
+  render.addView('view', function(context){
+    return '<strong>' + context.source + '</strong>' + context.content
+  })
+
+  var get = createGetter({
+    test: 'value'
+  })
+
+  var expected = '<div><strong>value</strong>Content</div>'
+  t.equal(render({get: get}), expected)
+})
+
 function createGetter(data){
   return function(query){
     var overrides = this.override || {}
