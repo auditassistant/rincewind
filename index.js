@@ -2,9 +2,9 @@ var render = require('./lib/render')
 var requireView = require('./lib/require')
 var parse = require('./lib/parse')
 
-module.exports = function(view){
+module.exports = function(view, opts){
 
-  view = getView(view)
+  view = getView(view, opts)
 
   var func = function(context){
     context = context || {}
@@ -43,9 +43,9 @@ function addExt(template, externalRefs){
   })
 }
 
-function getView(view){
+function getView(view, opts){
   if (typeof view == 'string'){
-    view = requireView(view)
+    view = requireView(view, opts)
   } else if (view.parse) {
     view = parse(view.parse)
   }
