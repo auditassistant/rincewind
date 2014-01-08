@@ -1,6 +1,7 @@
 var render = require('./lib/render')
 var requireView = require('./lib/require')
 var parse = require('./lib/parse')
+var dump = require('./lib/dump')
 
 module.exports = function(view, opts){
 
@@ -14,6 +15,10 @@ module.exports = function(view, opts){
 
   func.getCompiledView = function(){
     return view
+  }
+
+  func.stringify = function(root){
+    return dump(view, root || process.cwd())
   }
 
   func.getExternal = function(){

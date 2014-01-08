@@ -173,6 +173,11 @@ Or you can use [rincewind-precompile-transform](https://github.com/mmckegg/rince
 $ browserify entry.js -t rincewind-precompile-transform > output.js
 ```
 
+### Watch script
+
+For more control use [rincewind-watch](https://github.com/mmckegg/rincewind-watch) to and trigger callbacks on changes and manually compile to javascript (and call `view.stringify(relativePath)`). The compiled file can then be required by your code.
+
+
 ## The magic t:attributes
 
 
