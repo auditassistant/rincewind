@@ -37,6 +37,17 @@ test("Parse standard elements with inner view", function(t){
   t.end()
 })
 
+test("Parse standard elements with repeating inner view", function(t){
+  var view = "<div>Contents <strong>Some sub content</strong> <div t:repeat='collection' t:view='inline_item'/></div>"
+  //console.log(util.inspect(parseView(view), false, 10))
+  
+  var expected = {
+    c: ['<div>Contents <strong>Some sub content</strong> ', {"c":["<div>",{"v":"inline_item"},"</div>"],"r":"collection"}, '</div>']
+  }
+
+  t.deepEqual(parseView(view), expected)
+  t.end()
+})
 
 test("t:by and t:when", function(t){
   var view = "<div t:by='type'><div t:when='cat'>Cat</div><div t:when='dog'>Dog</div><div t:when='cat|dog'>Either</div></div>"
