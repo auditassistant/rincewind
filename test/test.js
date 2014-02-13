@@ -84,6 +84,23 @@ test('Inner view', function(t){
   t.equal(render({get: get}), expected)
 })
 
+test('Bound view (formatter)', function(t){
+  t.plan(1)
+
+  var get = createGetter({
+    value: 'hello'
+  })
+
+  var render = getTemplate({parse: '<div> <h1>Title</h1> <span t:view="loud" t:bind="value" /> </div>'})
+  render.addView('loud', function(context){
+    return context.source.toUpperCase() + "!"
+  })
+
+  var expected = '<div> <h1>Title</h1> <span>HELLO!</span> </div>'
+
+  t.equal(render({get: get}), expected)
+})
+
 test('Inner view with placeholder', function(t){
   t.plan(1)
 
