@@ -120,3 +120,14 @@ test("bind attributes", function(t){
   t.deepEqual(parseView(view), expected)
   t.end()
 })
+
+test("parse t:as", function(t){
+  var view = '<div>stuff</div><div t:as="current">Content</div>'
+  
+  var expected = {
+    c: ["<div>stuff</div>",{"c":["<div>Content</div>"],"as":"current"}]
+  }
+
+  t.deepEqual(parseView(view), expected)
+  t.end()
+})

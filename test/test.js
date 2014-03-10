@@ -66,6 +66,24 @@ test('Context as', function(t){
   t.equal(render({get: get}), expected)
 })
 
+test('Context as without t:repeat', function(t){
+  t.plan(1)
+
+  var context = {
+    get: function(query){
+      if (query === 'current'){
+        return this.override['current']
+      }
+    },
+    source: 'source'
+  }
+
+  var render = getTemplate({parse: '<div>stuff</div><div t:as="current">Content <span t:bind="current" /></div>'})
+  var expected = '<div>stuff</div><div>Content <span>source</span></div>'
+
+  t.equal(render(context), expected)
+})
+
 test('Inner view', function(t){
   t.plan(1)
 
