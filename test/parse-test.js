@@ -11,6 +11,15 @@ test("Parse standard elements", function(t){
   t.end()
 })
 
+test("Parse with no whitespace", function(t){
+  var view = "<div id='main'>Contents <div t:whitespace='none'>Some sub content\n  <div> Test </div>\n</div></div>"
+  var expected = {
+    c: ["<div id=\"main\">Contents ",{c:["<div>Some sub content<div>Test</div></div>"]},"</div>"]
+  }
+  t.deepEqual(parseView(view), expected)
+  t.end()
+})
+
 
 test("Parse standard elements with repeater", function(t){
   var view = "<div>Contents <span t:repeat='query'><span t:bind='.test:cat'/></span></div>"
