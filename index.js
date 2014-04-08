@@ -2,6 +2,7 @@ var render = require('./lib/render')
 var requireView = require('./lib/require')
 var parse = require('./lib/parse')
 var dump = require('./lib/dump')
+var getLocals = require('./lib/get_locals')
 
 module.exports = function(view, opts){
 
@@ -10,6 +11,7 @@ module.exports = function(view, opts){
   var func = function(context){
     context = context || {}
     context.views = view.views
+    context.locals = getLocals(view)
     return render(view.c, context)
   }
 
