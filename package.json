@@ -22,11 +22,12 @@
     "html",
     "template",
     "bind",
-    "serverside",
-    "clientside",
+    "server",
+    "browser",
     "pure",
     "render",
-    "parser"
+    "parser",
+    "require"
   ],
   "author": "Matt McKegg",
   "license": "MIT",
