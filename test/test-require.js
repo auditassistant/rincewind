@@ -12,3 +12,16 @@ test('require resolve', function(t){
   t.equal(render().trim(), '<h1> <span><strong>I am strong text</strong></span> </h1>')
   t.end()
 })
+
+test('resource resolve', function(t){
+  var render = View(__dirname + '/views/resources.html')
+
+  function get(query){
+    if (query === ':css(Object)'){
+      return this.locals['Object'].key
+    }
+  }
+
+  t.equal(render({get: get}).trim(), '<h1> <span><strong>I am strong text</strong></span> </h1>')
+
+})

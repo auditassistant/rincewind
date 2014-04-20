@@ -86,6 +86,21 @@ test("process requires", function(t){
   t.end()
 })
 
+test("process resources", function(t){
+  var view = "<? resource './object.css' as Object ?><div t:bind:class=':css(Object)' />"
+  //console.log(util.inspect(parseView(view), false, 10))
+  
+  var expected = {
+    c: ['<div class="', {q: ':css(Object)', e: 'attr'}, '"></div>'],
+    resources: {
+      'Object': './object.css'
+    }
+  }
+
+  t.deepEqual(parseView(view), expected)
+  t.end()
+})
+
 test("self closing tags", function(t){
   var view = "<div><img src='test.jpg' /> <br /> <hr /><script src='test' />"
   
