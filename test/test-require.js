@@ -22,6 +22,6 @@ test('resource resolve', function(t){
     }
   }
 
-  t.equal(render({get: get}).trim(), '<h1> <span><strong>I am strong text</strong></span> </h1>')
-
+  t.equal(render({get: get}).trim(), '<div class="RSOTT2TBEG-object">Content</div>')
+  t.end()
 })
