@@ -1,6 +1,6 @@
 {
   "name": "rincewind",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "An HTML based template engine with a few ever-so-slightly magic attributes",
   "main": "index.js",
   "dependencies": {
