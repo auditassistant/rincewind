@@ -5,7 +5,8 @@ var dump = require('./lib/dump')
 var getLocals = require('./lib/get_locals')
 
 module.exports = function(view, opts){
-
+  // opts: cache
+  
   view = getView(view, opts)
 
   var func = function(context){
