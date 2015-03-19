@@ -4,8 +4,9 @@
   "description": "An HTML based template engine with a few ever-so-slightly magic attributes",
   "main": "index.js",
   "dependencies": {
-    "sax": "~0.5.5",
     "json-filter": "~0.0",
+    "resolve": "^1.1.6",
+    "sax": "~0.5.5",
     "unique-resource": "~0.1.0"
   },
   "devDependencies": {

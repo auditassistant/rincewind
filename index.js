@@ -3,10 +3,17 @@ var requireView = require('./lib/require')
 var parse = require('./lib/parse')
 var dump = require('./lib/dump')
 var getLocals = require('./lib/get_locals')
+var resolve = require('resolve')
+var caller = require('resolve/lib/caller')
+var path = require('path')
 
 module.exports = function(view, opts){
   // opts: cache
   
+  if (isPackageRequire(view)){
+    view = resolve.sync(view, { basedir: path.dirname(caller()) })
+  }
+
   view = getView(view, opts)
 
   var func = function(context){
@@ -58,4 +65,9 @@ function getView(view, opts){
     view = parse(view.parse)
   }
   return view
+}
+
+
+function isPackageRequire(file){
+  return typeof file === 'string' && !!/^[^\.\/\\]/.exec(file)
 }
