@@ -9,7 +9,6 @@ test(function(t){
     var text = 'Hello world'
     var arg = 'arg value'
     if (query === 'text:format(arg)'){
-      console.log(this.locals)
       return this.locals.format.call(this, text, arg)
     }
   }

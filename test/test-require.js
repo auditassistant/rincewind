@@ -7,9 +7,20 @@ test('require resolve', function(t){
 
   t.deepEqual(render.getExternal().map(function(f){
     return path.relative(__dirname, f)
-  }), ['views/strong.js'])
+  }), ['views/strong.js', 'node_modules/module-with-views/em.js'])
 
-  t.equal(render().trim(), '<h1> <span><strong>I am strong text</strong></span> </h1>')
+  t.equal(render().trim(), '<section> <h1> <span><strong>I am strong text</strong></span> <span><em>I am italic text</em></span> </h1> </section>')
+  t.end()
+})
+
+test('package require resolve', function(t){
+  var render = View('another-module/index.html')
+
+  t.deepEqual(render.getExternal().map(function(f){
+    return path.relative(__dirname, f)
+  }), ['node_modules/module-with-views/em.js'])
+
+  t.equal(render().trim(), '<section> <span><em>I am italic text</em></span> </section>')
   t.end()
 })
 

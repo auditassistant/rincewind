@@ -1,6 +1,12 @@
 <? require './_header.html' as header ?>
 <? require './strong.js' as strong ?>
 
-<t:placeholder t:view='header'>
-  <span t:view='strong'>I am strong text</span>
+<? require 'module-with-views/_section.html' as section ?>
+<? require 'module-with-views/em.js' as em ?>
+
+<t:placeholder t:view='section'>
+  <t:placeholder t:view='header'>
+    <span t:view='strong'>I am strong text</span>
+    <span t:view='em'>I am italic text</span>
+  </t:placeholder>
 </t:placeholder>
