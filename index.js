@@ -69,5 +69,5 @@ function getView(view, opts){
 
 
 function isPackageRequire(file){
-  return typeof file === 'string' && !!/^[^\.\/\\]/.exec(file)
+  return typeof file === 'string' && !!/^[^\/\\]/.exec(file)
 }

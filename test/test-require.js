@@ -3,7 +3,7 @@ var test = require('tape')
 var path = require('path')
 
 test('require resolve', function(t){
-  var render = View(__dirname + '/views/index.html')
+  var render = View('./views/index.html')
 
   t.deepEqual(render.getExternal().map(function(f){
     return path.relative(__dirname, f)
