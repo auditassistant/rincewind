@@ -23,16 +23,3 @@ test('package require resolve', function(t){
   t.equal(render().trim(), '<section> <span><em>I am italic text</em></span> </section>')
   t.end()
 })
-
-test('resource resolve', function(t){
-  var render = View(__dirname + '/views/resources.html')
-
-  function get(query){
-    if (query === ':css(Object)'){
-      return this.locals['Object'].key
-    }
-  }
-
-  t.equal(render({get: get}).trim(), '<div class="RSOTT2TBEG-object">Content</div>')
-  t.end()
-})
