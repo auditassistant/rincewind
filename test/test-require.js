@@ -23,3 +23,12 @@ test('package require resolve', function(t){
   t.equal(render().trim(), '<section> <span><em>I am italic text</em></span> </section>')
   t.end()
 })
+
+test('package circular require resolve ', function(t){
+  var render = View('./views/circular.html')
+
+  t.deepEqual(render.getExternal(), [])
+
+  t.equal(render().trim(), '<div>circular lol</div>')
+  t.end()
+})

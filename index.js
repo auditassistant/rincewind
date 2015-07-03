@@ -45,15 +45,19 @@ module.exports = function(view, opts){
   return func
 }
 
-function addExt(template, externalRefs){
+function addExt(template, externalRefs, processed){
+  processed = processed || []
+  processed.push(template)
+
   Object.keys(template.views).forEach(function(key){
     var view = template.views[key]
     if (view.require){
       if (!~externalRefs.indexOf(view.require)){
         externalRefs.push(view.require)
       }
-    } else {
-      addExt(view, externalRefs) 
+    } else if (!~processed.indexOf(view)) {
+      // avoid circular 
+      addExt(view, externalRefs, processed) 
     }
   })
 }

@@ -13,3 +13,10 @@ test('stringify direct parse', function(t){
   t.deepEqual(view.stringify(), expected)
   t.end()
 })
+
+test('stringify cirular', function(t){
+  var expected = "{\"c\": [\" <div>circular lol</div>\"], \"views\": {\"self\": \"$self\"}}"
+  var view = View('./views/circular.html')
+  t.deepEqual(view.stringify(), expected)
+  t.end()
+})
